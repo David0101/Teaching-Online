@@ -1,0 +1,24 @@
+#本地环境
+#spring
+spring:
+  profiles:
+    active: dev
+---
+#测试环境
+#spring
+spring:
+  profiles:
+    active: test
+---
+#测试环境
+#spring
+spring:
+  profiles:
+    active: prod
+#logging
+logging :
+  config:
+    classpath: logback.xml
+  level:
+    root: info
+    org.springframework.web: deb

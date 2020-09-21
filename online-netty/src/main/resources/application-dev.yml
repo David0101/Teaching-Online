@@ -1,0 +1,157 @@
+#本地环境
+#
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://center:123456@localhost:8761/eureka/
+#ribbon
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+  eureka:
+    enabled: true
+
+#spring
+spring:
+  application:
+    name: teaching-online-netty
+  profiles:
+    active: dev
+  devtools:
+    restart:
+      enabled: false
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tcc?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&allowMultiQueries=true
+    username: root
+    password: root
+    continue-on-error: true
+    # 下面为连接池的补充设置，应用到上面所有数据源中
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 初始化大小，最小，最大
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    # 配置获取连接等待超时的时间
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j,config
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 合并多个DruidDataSource的监控数据
+    useGlobalDataSourceStat: true
+    #mq
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: 123456
+
+cloud:
+  rabbitmq:
+    trail:
+      exchange: fanoutExchange
+      queue:  fanout.live.trailQueue
+  kafka:
+    consumer:
+      servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      enable:
+        auto:
+          commit: true
+      session:
+        timeout: 6000
+      auto:
+        commit:
+          interval: 100
+        offset:
+          reset: latest
+      group-id: live_tcp
+      concurrency: 10
+      max:
+        poll:
+          records: 400
+    producer:
+      servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      retries: 1
+      batch:
+        size: 4096
+      linger: 1
+      buffer:
+        memory: 40960
+#netty
+tcp:
+  port: 11233
+  collectPort: 11234
+# bossGroup的线程数
+boss:
+  thread:
+    count: 4
+# worker的线程数
+worker:
+  thread:
+    count: 4
+#是否使用长连接
+so:
+  keepalive:  true
+  backlog: 100
+  sendBufferSize: 5242880
+  ReceiveBufferSize:  10485760
+
+#mybatis
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.jim.online.entity
+  typeEnumsPackage: com.jim.online.entity.enums
+  global-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 2
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+    #数据库大写下划线转换
+    #capital-mode: true
+    #序列接口实现类配置,不在推荐使用此方式进行配置,请使用自定义bean注入
+    key-generator: com.baomidou.mybatisplus.incrementer.H2KeyGenerator
+    #逻辑删除配置（下面3个配置）
+    logic-delete-value: 0
+    logic-not-delete-value: 1
+    #自定义sql注入器,不在推荐使用此方式进行配置,请使用自定义bean注入
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+    #自定义填充策略接口实现,不在推荐使用此方式进行配置,请使用自定义bean注入
+    meta-object-handler: com.jim.online.MyMetaObjectHandler
+    #自定义SQL注入器
+    #sql-injector: com.baomidou.springboot.xxx
+    # SQL 解析缓存，开启后多租户 @SqlParser 注解生效
+    sql-parser-cache: true
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+
+#redis
+redis:
+  server: localhost
+  port: 6379
+  password:
+  database: 1
+
+
